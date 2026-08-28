@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import TipoTurno from './components/Turno';
 import Empleados from './components/Empleados' // <-- 1. Importamos tu nueva pantalla
 
 export default function App() {
@@ -24,7 +25,7 @@ export default function App() {
         {/* 2. Aquí inyectamos tu componente real */}
         {vistaActual === 'empleados' && <Empleados />} 
         
-        {vistaActual === 'turnos' && <h2>Pantalla: Gestión de Horarios (Próximamente)</h2>}
+        {vistaActual === 'turnos' && <TipoTurno />}
       </section>
     </main>
   )

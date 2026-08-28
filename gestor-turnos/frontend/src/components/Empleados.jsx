@@ -40,13 +40,27 @@ export default function Empleados() {
     const guardarEmpleado = (e) => {
         e.preventDefault(); // Evita que la página se recargue
 
-        api.crearEmpleado(formulario)
-            .then(() => {
-                alert("¡Empleado guardado con éxito!");
-                cargarEmpleados(); // Recargamos la lista para ver al nuevo
-                setFormulario({ dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' }); // Limpiamos la libreta
-            })
-            .catch(error => alert("Error al guardar: " + error.message));
+        // ¿Tenemos un ID en la libreta? Entonces estamos EDITANDO
+        if (formulario.idEmpleado) {
+            api.actualizarEmpleado(formulario.idEmpleado, formulario)
+                .then(() => {
+                    alert("¡Empleado actualizado con éxito!");
+                    cargarEmpleados(); // Refrescamos la tabla
+                    // Vaciamos la libreta y volvemos al modo "Crear"
+                    setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' });
+                })
+                .catch(error => alert("Error al actualizar: " + error.message));
+
+        } else {
+            // Si NO hay ID, entonces estamos CREANDO uno nuevo (lo que ya tenías)
+            api.crearEmpleado(formulario)
+                .then(() => {
+                    alert("¡Empleado guardado con éxito!");
+                    cargarEmpleados();
+                    setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' });
+                })
+                .catch(error => alert("Error al guardar: " + error.message));
+        }
     };
 
     const prepararEdicion = (empleadoSeleccionado) => {
@@ -61,6 +75,17 @@ export default function Empleados() {
             observaciones: empleadoSeleccionado.observaciones || '' // Por si las observaciones vienen en null desde Java
         });
     };
+
+    const borrarEmpleado = (id) => {
+        if (window.confirm("¿Estás seguro de que quieres despedir a este empleado y borrar sus datos?")) {
+            api.eliminarEmpleado(id)
+                .then(() => {
+                    alert("Empleado eliminado.");
+                    cargarEmpleados(); // Recargamos la tabla para que desaparezca visualmente
+                })
+                .catch(error => alert("Error al eliminar: " + error.message));
+        }
+    }
 
     return (
         <div className="pantalla-empleados">
@@ -107,6 +132,7 @@ export default function Empleados() {
                             <td>{emp.disponible ? "✅ Activo" : "❌ Baja/Inactivo"}</td>
                             <td>
                                 <button onClick={() => prepararEdicion(emp)}>✏️ Editar</button>
+                                <button onClick={() => borrarEmpleado(emp.idEmpleado)} style={{ marginLeft: '10px', backgroundColor: '#ff4d4d', color: 'white' }}>🗑️ Borrar</button>
                             </td>
                         </tr>
                     ))}

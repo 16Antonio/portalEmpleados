@@ -9,8 +9,35 @@ export const api = {
         body: JSON.stringify(datos)
     }).then(res => res.json()),
 
+    actualizarEmpleado: (id, datos) => fetch(`${URL_BASE}/empleados/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    }).then(res => res.json()),
+
+    eliminarEmpleado: (id) => fetch(`${URL_BASE}/empleados/${id}`, { 
+        method: 'DELETE' 
+    }),
+
+
     // 2. Tipos de Turno
     obtenerTiposTurno: () => fetch(`${URL_BASE}/turnos`).then(res => res.json()),
+
+    crearTipoTurno: (datos) => fetch(`${URL_BASE}/turnos`,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    }).then(res => res.json()),
+
+    actualizarTipoTurno: (id, datos) => fetch(`${URL_BASE}/turnos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    }).then(res => res.json()),
+
+    eliminarTipoTurno: (id) => fetch(`${URL_BASE}/turnos/${id}`, { 
+        method: 'DELETE' 
+    }),
 
     // 3. Cuadrantes (Asignaciones)
     obtenerCuadrantes: () => fetch(`${URL_BASE}/cuadrantes`).then(res => res.json()),
@@ -26,9 +53,4 @@ export const api = {
         return res.json();
     }),
 
-    actualizarEmpleado: (id, datos) => fetch(`${URL_BASE}/empleados/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-    }).then(res => res.json()),
 };
