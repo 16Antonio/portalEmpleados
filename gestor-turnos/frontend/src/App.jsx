@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import './App.css'
 import TipoTurno from './components/Turno';
-import Empleados from './components/Empleados' // <-- 1. Importamos tu nueva pantalla
+import Empleados from './components/Empleados' 
+import AsignarTurno from './components/AsignarTurno'
+import Cuadrantes from './components/Cuadrantes';
 
 export default function App() {
   const [vistaActual, setVistaActual] = useState('empleados'); // <-- Lo ponemos por defecto para verlo rápido
@@ -19,8 +21,8 @@ export default function App() {
       </header>
 
       <section className="contenido">
-        {vistaActual === 'cuadrante' && <h2>Pantalla: Cuadrante Semanal (Próximamente)</h2>}
-        {vistaActual === 'asignar' && <h2>Pantalla: Formulario de Asignación (Próximamente)</h2>}
+        {vistaActual === 'cuadrante' && <Cuadrantes />}
+        {vistaActual === 'asignar' && <AsignarTurno />}
         
         {/* 2. Aquí inyectamos tu componente real */}
         {vistaActual === 'empleados' && <Empleados />} 

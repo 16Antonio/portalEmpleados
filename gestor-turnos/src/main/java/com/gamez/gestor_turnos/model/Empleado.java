@@ -28,6 +28,10 @@ public class Empleado {
 
     private String observaciones;
 
+    private String password;
+
+    private String rol;
+
     public Long getIdEmpleado() {
         return idEmpleado;
     }
@@ -84,6 +88,22 @@ public class Empleado {
         this.observaciones = observaciones;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -108,6 +128,8 @@ public class Empleado {
             return false;
         return true;
     }
+
+    
 
     
 }

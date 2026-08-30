@@ -41,7 +41,7 @@ public class TipoTurnoController {
         return repositorio.save(tipoTurnoActualizado);
     }
 
-    @DeleteMapping("/{id")
+    @DeleteMapping("/{id}")
     public void EliminarTurno(@PathVariable long id ){
         repositorio.deleteById(id);
     }

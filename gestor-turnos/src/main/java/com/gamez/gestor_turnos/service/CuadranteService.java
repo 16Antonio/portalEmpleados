@@ -73,4 +73,15 @@ public class CuadranteService {
         // 4. Todo correcto, guardamos
         return cuadrantesRepository.save(nuevoCuadrante);
     }
+
+    // Borrar asignación
+    public void eliminarCuadrante(Long id) {
+        cuadrantesRepository.deleteById(id);
+    }
+
+    // Actualizar asignación (Sobrescribe directamente)
+    public Cuadrante actualizarCuadrante(Long id, Cuadrante cuadranteActualizado) {
+        cuadranteActualizado.setIdCuadrante(id);
+        return cuadrantesRepository.save(cuadranteActualizado);
+    }
 }

@@ -11,13 +11,15 @@ export default function Empleados() {
         apellidos: '',
         puesto: '',
         disponible: true,
-        observaciones: ''
+        observaciones: '',
+        password: '',
+        rol: 'ROLE_USER'
     });
 
     const cargarEmpleados = () => {
         api.obtenerEmpleados()
             .then(datos => setEmpleados(datos))
-            .catch(error => console.error("Error al cargar:", error));
+            .catch(error => console.error("Error al cargar los empleados:", error));
     };
 
     // 2. LA PREPARACIÓN (Cargar datos al entrar)
@@ -49,7 +51,7 @@ export default function Empleados() {
                     // Vaciamos la libreta y volvemos al modo "Crear"
                     setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' });
                 })
-                .catch(error => alert("Error al actualizar: " + error.message));
+                .catch(error => alert("Error al actualizar empleado: " + error.message));
 
         } else {
             // Si NO hay ID, entonces estamos CREANDO uno nuevo (lo que ya tenías)
@@ -59,7 +61,7 @@ export default function Empleados() {
                     cargarEmpleados();
                     setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' });
                 })
-                .catch(error => alert("Error al guardar: " + error.message));
+                .catch(error => alert("Error al guardar empleado: " + error.message));
         }
     };
 
@@ -98,7 +100,11 @@ export default function Empleados() {
                 <input type="text" name="nombre" placeholder="Nombre" value={formulario.nombre} onChange={manejarCambio} required />
                 <input type="text" name="apellidos" placeholder="Apellidos" value={formulario.apellidos} onChange={manejarCambio} required />
                 <input type="text" name="puesto" placeholder="Puesto (ej. Camarero)" value={formulario.puesto} onChange={manejarCambio} required />
-
+                <input type='password' name="password" placeholder="Contraseña" value={formulario.password} onChange={manejarCambio} required />
+                <select name="rol" value={formulario.rol} onChange={manejarCambio} required>
+                    <option value="ROLE_USER">Usuario</option>
+                    <option value="ROLE_ADMIN">Administrador</option>
+                </select>
                 <label>
                     <input type="checkbox" name="disponible" checked={formulario.disponible} onChange={manejarCambio} />
                     ¿Está disponible para trabajar?
@@ -106,12 +112,14 @@ export default function Empleados() {
 
                 <textarea name="observaciones" placeholder="Observaciones..." value={formulario.observaciones} onChange={manejarCambio}></textarea>
 
+
+
                 <button type="submit">Guardar Empleado</button>
             </form>
 
             {/* TABLA DE EMPLEADOS */}
             <h3>Plantilla Actual</h3>
-            <table border="1" style={{ width: '100%', textAlign: 'left', marginTop: '20px' }}>
+            <table className="tabla-estilizada">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -131,8 +139,8 @@ export default function Empleados() {
                             <td>{emp.puesto}</td>
                             <td>{emp.disponible ? "✅ Activo" : "❌ Baja/Inactivo"}</td>
                             <td>
-                                <button onClick={() => prepararEdicion(emp)}>✏️ Editar</button>
-                                <button onClick={() => borrarEmpleado(emp.idEmpleado)} style={{ marginLeft: '10px', backgroundColor: '#ff4d4d', color: 'white' }}>🗑️ Borrar</button>
+                                <button className="btn-editar" onClick={() => prepararEdicion(emp)}>✏️ Editar</button>
+                                <button className="btn-borrar" onClick={() => borrarEmpleado(emp.idEmpleado)}>🗑️ Borrar</button>
                             </td>
                         </tr>
                     ))}

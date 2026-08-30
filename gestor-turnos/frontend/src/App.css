@@ -1,4 +1,238 @@
-*{
-    background-color: rgb(21, 19, 19);
-    color: white;
+/* RESET BÁSICO */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #121212;
+    /* Fondo principal muy oscuro */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #e0e0e0;
+    /* Texto gris claro para no cansar la vista */
+}
+
+/* LAYOUT PRINCIPAL (App.jsx) */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background-color: #1e1e1e;
+    /* Fondo de la barra de navegación */
+    color: #ffffff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.navbar h1 {
+    font-size: 1.5rem;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 10px;
+}
+
+.navbar nav button {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.navbar nav button:hover {
+    background-color: #1abc9c;
+    /* Verde esmeralda neón */
+    color: #121212;
+    border-color: #1abc9c;
+}
+
+.contenido {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* CONTENEDORES DE PANTALLA */
+.pantalla-empleados {
+    animation: fadeIn 0.4s ease-in;
+}
+
+.pantalla-empleados h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.pantalla-empleados h3 {
+    color: #1abc9c;
+    /* Detalles en verde esmeralda */
+}
+
+/* FORMULARIOS ESTILIZADOS */
+.formulario-caja {
+    background: #1e1e1e;
+    /* Fondo de los paneles */
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.formulario-centrado {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.formulario-caja h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+.formulario-caja label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #aaaaaa;
+    margin-bottom: -5px;
+}
+
+/* Estilos para inputs oscuros */
+.formulario-caja input[type="text"],
+.formulario-caja input[type="time"],
+.formulario-caja input[type="date"],
+.formulario-caja input[type="password"],
+.formulario-caja select,
+.formulario-caja textarea {
+    width: 100%;
+    padding: 10px;
+    background-color: #2c2c2c;
+    /* Fondo del input oscuro */
+    color: #ffffff;
+    /* Texto del input blanco */
+    border: 1px solid #444;
+    border-radius: 6px;
+    font-size: 1rem;
+    color-scheme: dark;
+    /* Obliga al calendario nativo a salir en modo oscuro */
+}
+
+.formulario-caja input:focus,
+.formulario-caja select:focus,
+.formulario-caja textarea:focus {
+    outline: none;
+    border-color: #1abc9c;
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.3);
+}
+
+.formulario-caja button[type="submit"] {
+    background-color: #1abc9c;
+    color: #121212;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.formulario-caja button[type="submit"]:hover {
+    background-color: #16a085;
+    /* Un verde un poco más intenso */
+}
+
+/* TABLAS MODERNAS MODO OSCURO */
+.tabla-estilizada {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e1e1e;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    border: 1px solid #333;
+}
+
+.tabla-estilizada thead {
+    background-color: #111111;
+    /* Cabecera de la tabla casi negra */
+    color: #1abc9c;
+    border-bottom: 2px solid #333;
+}
+
+.tabla-estilizada th,
+.tabla-estilizada td {
+    padding: 14px 15px;
+    text-align: left;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.tabla-estilizada tbody tr:hover {
+    background-color: #252525;
+    /* Efecto hover sutil */
+}
+
+/* BOTONES DE ACCIÓN (Editar y Borrar) */
+.btn-editar {
+    background-color: #d68910;
+    color: #121212;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    transition: opacity 0.3s;
+    font-weight: bold;
+}
+
+.btn-editar:hover {
+    opacity: 0.8;
+}
+
+.btn-borrar {
+    background-color: #c0392b;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: opacity 0.3s;
+    font-weight: bold;
+}
+
+.btn-borrar:hover {
+    opacity: 0.8;
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

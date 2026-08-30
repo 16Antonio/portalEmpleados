@@ -53,4 +53,16 @@ export const api = {
         return res.json();
     }),
 
+    actualizarCuadrante: (id, datos) => fetch(`${URL_BASE}/cuadrantes/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+    }).then(res => res.json()),
+
+    eliminarCuadrnate: (id) => fetch(`${URL_BASE}/cuadrantes/${id}`, { 
+        method: 'DELETE' 
+    }),
+
+
+
 };
