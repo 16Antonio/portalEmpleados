@@ -48,7 +48,7 @@ public class SecurityConfig {
         // 👇 AQUÍ ES DONDE ABRIMOS LA PUERTA: Añade tu localhost y tu nueva URL de Vercel
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
-                "portal-empleados-topaz.vercel.app","portal-empleados-njp3piomm-16antonio.vercel.app" , "portal-empleados-git-master-16antonio.vercel.app" // Sustituye esto por el enlace real que te dé Vercel
+                "https://portal-empleados-topaz.vercel.app","https://portal-empleados-njp3piomm-16antonio.vercel.app" , "https://portal-empleados-git-master-16antonio.vercel.app" // Sustituye esto por el enlace real que te dé Vercel
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
