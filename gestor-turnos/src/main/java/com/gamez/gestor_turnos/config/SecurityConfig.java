@@ -2,6 +2,7 @@ package com.gamez.gestor_turnos.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,9 +14,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.gamez.gestor_turnos.security.JwtFilter;
+
 @Configuration
 @EnableWebSecurity // Enciende la seguridad web
 public class SecurityConfig {
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,8 +38,11 @@ public class SecurityConfig {
             // 4. AQUI DEFINIMOS QUÉ ESTÁ ABIERTO Y QUÉ ESTÁ CERRADO
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll() // Dejamos pública esta ruta para que puedan hacer Login
-                .anyRequest().authenticated() // BLOQUEAMOS ABSOLUTAMENTE TODO LO DEMÁS
+                .anyRequest().authenticated()
+                
             )
+
+            .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 
