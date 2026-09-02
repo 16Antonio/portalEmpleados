@@ -1,6 +1,6 @@
 package com.gamez.gestor_turnos.config;
 
-import java.util.List;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,33 +26,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            // 1. Solucionamos el problema de CORS (para que React no se bloquee antes de tiempo)
-            .cors(Customizer.withDefaults()) 
-            
-            // 2. Desactivamos CSRF (una protección para webs tradicionales, no para APIs con React)
-            .csrf(csrf -> csrf.disable()) 
-            
-            // 3. Le decimos que no guarde sesiones en memoria (vamos a usar Tokens temporales)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
-            
-            // 4. AQUI DEFINIMOS QUÉ ESTÁ ABIERTO Y QUÉ ESTÁ CERRADO
-            .authorizeHttpRequests(auth -> auth
+                // 1. Solucionamos el problema de CORS (para que React no se bloquee antes de tiempo)
+                .cors(Customizer.withDefaults())
+                // 2. Desactivamos CSRF (una protección para webs tradicionales, no para APIs con React)
+                .csrf(csrf -> csrf.disable())
+                // 3. Le decimos que no guarde sesiones en memoria (vamos a usar Tokens temporales)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 4. AQUI DEFINIMOS QUÉ ESTÁ ABIERTO Y QUÉ ESTÁ CERRADO
+                .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll() // Dejamos pública esta ruta para que puedan hacer Login
                 .anyRequest().authenticated()
-                
-            )
-
-            .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
-            .build();
+                )
+                .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
-    // Configuración detallada para permitir que React (puerto 5173) hable con Java
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+
+        // 👇 AQUÍ ES DONDE ABRIMOS LA PUERTA: Añade tu localhost y tu nueva URL de Vercel
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "portal-empleados-topaz.vercel.app","portal-empleados-njp3piomm-16antonio.vercel.app" , "portal-empleados-git-master-16antonio.vercel.app" // Sustituye esto por el enlace real que te dé Vercel
+        ));
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
