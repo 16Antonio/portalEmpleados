@@ -21,37 +21,31 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    // Gracias a Lombok y a final, no necesitamos @Autowired
     private final RolRepository rolRepository;
     private final PermisoRepository permisoRepository;
     private final EmpleadoRepository empleadoRepository;
-    private final PasswordEncoder passwordEncoder; // Para arreglar las contraseñas antiguas
+    private final PasswordEncoder passwordEncoder; 
 
     @Override
     public void run(String... args) throws Exception {
         
         // --- 1. CREACIÓN DE PERMISOS ---
-        // Permisos de Empleados
         Permiso verEmpleados = crearPermisoSiNoExiste("VER_EMPLEADOS");
         Permiso crearEmpleado = crearPermisoSiNoExiste("CREAR_EMPLEADO");
         Permiso editarEmpleado = crearPermisoSiNoExiste("EDITAR_EMPLEADO");
         Permiso borrarEmpleado = crearPermisoSiNoExiste("BORRAR_EMPLEADO");
 
-        // Permisos de Cuadrantes
         Permiso verCuadrantes = crearPermisoSiNoExiste("VER_CUADRANTES");
         Permiso asignarTurno = crearPermisoSiNoExiste("ASIGNAR_TURNO");
         Permiso editarCuadrante = crearPermisoSiNoExiste("EDITAR_CUADRANTE");
         Permiso borrarCuadrante = crearPermisoSiNoExiste("BORRAR_CUADRANTE");
 
-        // Permisos de Tipos de Turno
         Permiso verTiposTurno = crearPermisoSiNoExiste("VER_TIPOS_TURNO");
         Permiso crearTipoTurno = crearPermisoSiNoExiste("CREAR_TIPO_TURNO");
         Permiso editarTipoTurno = crearPermisoSiNoExiste("EDITAR_TIPO_TURNO");
         Permiso borrarTipoTurno = crearPermisoSiNoExiste("BORRAR_TIPO_TURNO");
 
         // --- 2. CREACIÓN DE ROLES ---
-        
-        // ROL ADMIN: Tiene absolutamente todos los permisos
         Rol rolAdmin = rolRepository.findByNombre("ADMIN").orElseGet(() -> {
             Rol nuevoRol = new Rol();
             nuevoRol.setNombre("ADMIN");
@@ -68,7 +62,6 @@ public class DataInitializer implements CommandLineRunner {
             return rolRepository.save(nuevoRol);
         });
 
-        // ROL EMPLEADO: Solo puede ver su horario y los tipos de turno que existen
         Rol rolEmpleado = rolRepository.findByNombre("EMPLEADO").orElseGet(() -> {
             Rol nuevoRol = new Rol();
             nuevoRol.setNombre("EMPLEADO");
@@ -81,26 +74,23 @@ public class DataInitializer implements CommandLineRunner {
             return rolRepository.save(nuevoRol);
         });
 
-        // --- 3. CONFIGURAR A TU USUARIO COMO ADMINISTRADOR ---
+        // --- 3. RESCATE DE TU USUARIO ADMINISTRADOR ---
         String tuDni = "11111111A"; 
         
         Optional<Empleado> tuUsuario = empleadoRepository.findByDni(tuDni);
         if (tuUsuario.isPresent()) {
             Empleado empleado = tuUsuario.get();
             
-            // Asignar rol ADMIN si no tiene rol
-            if (empleado.getRol() == null) {
-                empleado.setRol(rolAdmin);
-                System.out.println("✅ Rol ADMIN asignado con éxito a: " + tuDni);
-            }
+            // Le asignamos el rol por si lo perdió
+            empleado.setRol(rolAdmin);
             
-            // Encriptar la contraseña si sigue en texto plano
-            if (empleado.getPassword() != null && !empleado.getPassword().startsWith("$2a$")) {
-                empleado.setPassword(passwordEncoder.encode(empleado.getPassword()));
-                System.out.println("✅ Contraseña del ADMIN encriptada y actualizada.");
-            }
+            // Le machacamos la contraseña encriptando un "1234" fresco
+            empleado.setPassword(passwordEncoder.encode("1234"));
             
             empleadoRepository.save(empleado);
+            System.out.println("✅ LLAVE MAESTRA CREADA: Usuario " + tuDni + " reseteado con rol ADMIN y contraseña '1234'");
+        } else {
+            System.out.println("❌ ATENCIÓN: No existe ningún empleado con el DNI " + tuDni + " en la base de datos.");
         }
     }
 
