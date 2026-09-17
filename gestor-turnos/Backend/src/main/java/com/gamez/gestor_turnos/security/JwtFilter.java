@@ -1,9 +1,9 @@
 package com.gamez.gestor_turnos.security;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,19 +14,20 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-        
+
         // CHIVATO 1: Ver qué nos llega de Postman
         System.out.println("1. Cabecera recibida: " + authHeader);
 
@@ -36,23 +37,30 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        
+
         // CHIVATO 2: Ver el token limpio
         System.out.println("2. Token limpio: " + token);
 
         if (jwtService.isTokenValido(token)) {
             // CHIVATO 3: Confirmar que la firma está bien
             System.out.println("3. ¡EL TOKEN ES VÁLIDO!");
-            
-            String dni = jwtService.extraerUsername(token);
-            String rol = jwtService.extraerRol(token);
 
+            String dni = jwtService.extraerUsername(token);
+            // Sacamos la lista de permisos del token
+            List<String> permisos = jwtService.extraerPermisos(token);
+
+// Las convertimos al formato que le gusta a Spring Security
+            List<SimpleGrantedAuthority> authorities = permisos.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+
+// Creamos la autenticación con toda la lista completa
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    dni, null, Collections.singletonList(new SimpleGrantedAuthority(rol))
+                    dni, null, authorities
             );
             SecurityContextHolder.getContext().setAuthentication(authToken);
         } else {
-             System.out.println("3. ❌ EL TOKEN HA DADO ERROR DE VALIDACIÓN");
+            System.out.println("3. ❌ EL TOKEN HA DADO ERROR DE VALIDACIÓN");
         }
 
         filterChain.doFilter(request, response);

@@ -2,13 +2,15 @@ package com.gamez.gestor_turnos.config;
 
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -16,12 +18,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.gamez.gestor_turnos.security.JwtFilter;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity // Enciende la seguridad web
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private JwtFilter jwtFilter;
+
+    private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,7 +54,7 @@ public class SecurityConfig {
         // 👇 AQUÍ ES DONDE ABRIMOS LA PUERTA: Añade tu localhost y tu nueva URL de Vercel
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
-                "https://portal-empleados-topaz.vercel.app","https://portal-empleados-njp3piomm-16antonio.vercel.app" , "https://portal-empleados-git-master-16antonio.vercel.app" // Sustituye esto por el enlace real que te dé Vercel
+                "https://portal-empleados-topaz.vercel.app", "https://portal-empleados-njp3piomm-16antonio.vercel.app", "https://portal-empleados-git-master-16antonio.vercel.app" // Sustituye esto por el enlace real que te dé Vercel
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -58,5 +64,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -3,72 +3,85 @@ package com.gamez.gestor_turnos.security;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import com.gamez.gestor_turnos.model.Empleado;
+
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException; // Asegúrate de importar esto arriba
 
 @Service
 public class JwtService {
 
-    // 🚨 EL SELLO DE AGUA (Firma Secreta) 🚨
-    // Con esta clave secreta firmamos los tokens. Si alguien te roba esto, puede falsificar llaves.
-    // (Es una frase muy larga codificada en Base64).
-    private static final String SECRET_KEY = "VGhpcy1pcy1hLXZlcnktc2VjdXJlLWtleS1mb3ItZ2VzdG9yLXR1cm5vcy1wcm9qZWN0LW11c3QtYmUtbG9uZw==";
+    
 
-    // Método principal: Fabrica la pulsera VIP
-    public String generarToken(String username, String rol) {
+@Value("${jwt.secret}")
+private String secretKey;
+
+    // 1. AHORA RECIBE EL EMPLEADO COMPLETO
+    public String generarToken(Empleado empleado) {
         
-        // "Claims" son datos extra que metemos dentro de la pulsera
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("rol", rol); // Metemos si es ADMIN o USER para que React lo sepa luego
+        
+        // 2. EXTRAEMOS LA LISTA DE PERMISOS EN TEXTO
+        List<String> permisos = empleado.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+                
+        extraClaims.put("permisos", permisos); // Guardamos la lista en lugar del objeto Rol
 
         return Jwts.builder()
             .setClaims(extraClaims)
-            .setSubject(username) // El "dueño" de la pulsera (usaremos el DNI o el nombre)
-            .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha de creación (AHORA)
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Caduca en 24 horas
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256) // Lo firmamos con el sello de agua
-            .compact(); // Lo comprime todo en el famoso texto JWT
+            .setSubject(empleado.getDni()) // O el campo que uses para el login (email, dni...)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact();
     }
 
-    // Traduce nuestra clave secreta de texto a un formato criptográfico que entiende Java
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // Saca el DNI (Subject) de dentro del token
     public String extraerUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token) // Si el token está manipulado, esto da error
-                .getBody()
-                .getSubject();
-    }
-
-    // Saca el Rol (ADMIN o USER) de dentro del token
-    public String extraerRol(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("rol", String.class);
+                .getSubject();
     }
 
-    // Comprueba que la firma matemática es correcta y no ha caducado
+    // 3. AHORA EXTRAE UNA LISTA DE PERMISOS, NO UN SOLO ROL
+    @SuppressWarnings("unchecked")
+    public List<String> extraerPermisos(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("permisos", List.class);
+    }
+
     public boolean isTokenValido(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            return false; // Si falla algo (falso, caducado...), devuelve false
+        } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException e) {
+            return false;
         }
     }
 }

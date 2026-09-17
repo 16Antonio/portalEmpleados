@@ -8,9 +8,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tipos_turno")
+@Getter
+@Setter
+@NoArgsConstructor
 public class TipoTurno {
 
     @Id
@@ -25,38 +31,6 @@ public class TipoTurno {
 
     @Column(nullable = false)
     private LocalTime horaFin;
-
-    public Long getIdTipoTurno() {
-        return idTipoTurno;
-    }
-
-    public void setIdTipoTurno(Long idTipoTurno) {
-        this.idTipoTurno = idTipoTurno;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
-
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-    public LocalTime getHoraFin() {
-        return horaFin;
-    }
-
-    public void setHoraFin(LocalTime horaFin) {
-        this.horaFin = horaFin;
-    }
 
     
 }

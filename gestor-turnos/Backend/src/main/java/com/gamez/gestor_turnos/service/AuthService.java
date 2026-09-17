@@ -1,6 +1,7 @@
 package com.gamez.gestor_turnos.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gamez.gestor_turnos.dto.AuthRequest;
@@ -9,14 +10,20 @@ import com.gamez.gestor_turnos.model.Empleado;
 import com.gamez.gestor_turnos.repository.EmpleadoRepository;
 import com.gamez.gestor_turnos.security.JwtService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    private EmpleadoRepository empleadoRepository;
+    
+    private final EmpleadoRepository empleadoRepository;
 
-    @Autowired
-    private JwtService jwtService;
+    
+    private final JwtService jwtService;
+
+   
+    private final PasswordEncoder passwordEncoder;
 
     public AuthResponse login(AuthRequest peticion) {
         // 1. Buscamos al empleado en la base de datos por su DNI
@@ -25,12 +32,12 @@ public class AuthService {
 
         // 2. Comprobamos si la contraseña es correcta 
         // (OJO: Aquí estamos comparando texto plano. En el futuro añadiremos encriptación BCrypt)
-        if (!empleado.getPassword().equals(peticion.getPassword())) {
+        if (!passwordEncoder.matches(peticion.getPassword(), empleado.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
         // 3. Si todo es correcto, encendemos la fábrica y le damos su token
-        String token = jwtService.generarToken(empleado.getDni(), empleado.getRol());
+        String token = jwtService.generarToken(empleado);
         
         return new AuthResponse(token);
     }

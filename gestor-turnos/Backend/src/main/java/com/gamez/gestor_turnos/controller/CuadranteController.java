@@ -2,7 +2,6 @@ package com.gamez.gestor_turnos.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gamez.gestor_turnos.model.Cuadrante;
 import com.gamez.gestor_turnos.service.CuadranteService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/cuadrantes")
+@RequiredArgsConstructor
+
 @CrossOrigin(origins = "http://localhost:5173")
 public class CuadranteController {
 
     // ATENCIÓN: Aquí NO inyectamos el Repository, inyectamos tu Service
-    @Autowired
-    private CuadranteService cuadranteService;
+
+    private final CuadranteService cuadranteService;
 
     @GetMapping
     public List<Cuadrante> obtenerTodos() {

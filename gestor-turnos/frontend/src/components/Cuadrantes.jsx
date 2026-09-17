@@ -2,48 +2,23 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 
 export default function Cuadrantes ( ){
-    const [cuadrantes, setCuadrnates] = useState([]);
-    const [empleados, setEmpleados] = useState([]);
-    const [tipoTurno, setTipoTurno] = useState([]);
+    const [cuadrantes, setCuadrantes] = useState([]);
 
-    const cargarTurnos = () => {
-        api.obtenerTiposTurno()
-            .then(datos => setTipoTurno(datos))
-            .catch(error => console.error("Error al cargar los turnos:", error))
-    };
-
-    const cargarEmpleados = () => {
-        api.obtenerEmpleados()
-            .then(datos => setEmpleados(datos))
-            .catch(error => console.error("Error al cargar los empleados:", error));
-    };
 
     const cargarCuadrantes = () =>  {
         api.obtenerCuadrantes()
-            .then(datos => setCuadrnates(datos))
+            .then(datos => setCuadrantes(datos))
             .catch(error => console.error("Error al cargar los turnos:", error))
     }
 
     useEffect( () =>{
         cargarCuadrantes();
-        cargarTurnos();
-        cargarEmpleados();
+
     },[]);
 
-    const getNombreEmpleado = (empleadoId) => {
-        const empleado = empleados.find(emp => emp.idEmpleado === empleadoId);
-        // Si lo encuentra, devuelve el nombre. Si no (o si aún está cargando), muestra 'Cargando...'
-        return empleado ? `${empleado.nombre} ${empleado.apellidos}` : 'Cargando...';
-    };
-
-    const getNombreTurno = (turnoId) => {
-        const turno = tipoTurno.find(tur => tur.idTipoTurno === turnoId);
-        return turno ? turno.nombre : 'Cargando...';
-    };
-
-    const borrarTurno = (turnoId) => {
+    const eliminarCuadrante = (turnoId) => {
         if (window.confirm("¿Estás seguro de que quieres borrar este turno?")) {
-            api.eliminarCuadrnate(turnoId)
+            api.eliminarCuadrante(turnoId)
                 .then(() => {
                     alert("Turno eliminado.");
                     cargarCuadrantes(); // Recargamos la tabla para que desaparezca visualmente
@@ -72,9 +47,9 @@ export default function Cuadrantes ( ){
                         <tr key={cua.idCuadrante}>
                             <td>{cua.idCuadrante}</td>
                             <td>{cua.fecha}</td>
-                            <td>{getNombreEmpleado(cua.empleado.idEmpleado)} </td>
-                            <td>{getNombreTurno(cua.tipoTurno.idTipoTurno)}</td>
-                            <td><button className="btn-borrar" onClick={() => borrarTurno(cua.idCuadrante)}>🗑️ Borrar</button></td>
+                            <td>{cua.empleado.nombre} {cua.empleado.apellidos}</td>
+                            <td>{cua.tipoTurno.nombre}</td>
+                            <td><button className="btn-borrar" onClick={() => eliminarCuadrante(cua.idCuadrante)}>🗑️ Borrar</button></td>
                         </tr>
                     ))}
                 </tbody>

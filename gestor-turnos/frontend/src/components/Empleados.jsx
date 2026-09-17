@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 
 export default function Empleados() {
-    // 1. NUESTRA LIBRETA DE NOTAS (Estados)
-    const [empleados, setEmpleados] = useState([]); // Lista de trabajadores
+    const [empleados, setEmpleados] = useState([]); 
+    const [roles, setRoles] = useState([]); // 🚀 1. Estado para guardar los roles posibles
+
     const [formulario, setFormulario] = useState({
         idEmpleado: null,
         dni: '',
@@ -13,7 +14,7 @@ export default function Empleados() {
         disponible: true,
         observaciones: '',
         password: '',
-        rol: 'ROLE_USER'
+        rolId: '' // 🚀 2. Añadimos el campo para guardar el ID del rol seleccionado
     });
 
     const cargarEmpleados = () => {
@@ -22,59 +23,65 @@ export default function Empleados() {
             .catch(error => console.error("Error al cargar los empleados:", error));
     };
 
-    // 2. LA PREPARACIÓN (Cargar datos al entrar)
     useEffect(() => {
         cargarEmpleados();
-    }, []); // Los corchetes vacíos significan: "Haz esto solo una vez al abrir"
+        // 🚀 3. Cargamos los roles al entrar a la pantalla
+        api.obtenerRoles()
+            .then(datos => setRoles(datos))
+            .catch(error => console.error("Error al cargar roles:", error));
+    }, []); 
 
-
-
-    // 3. MANEJAR EL FORMULARIO (Cuando escribes en los inputs)
     const manejarCambio = (e) => {
         const { name, value, type, checked } = e.target;
         setFormulario({
-            ...formulario, // Copiamos lo que ya había
-            [name]: type === 'checkbox' ? checked : value // Actualizamos solo el campo que ha cambiado
+            ...formulario, 
+            [name]: type === 'checkbox' ? checked : value 
         });
     };
 
-    // 4. GUARDAR EN JAVA (Al darle al botón)
     const guardarEmpleado = (e) => {
-        e.preventDefault(); // Evita que la página se recargue
+        e.preventDefault(); 
 
-        // ¿Tenemos un ID en la libreta? Entonces estamos EDITANDO
+        // 🚀 4. TRUCO PRO: Transformamos el rolId simple en el objeto que Java espera { id: X }
+        const datosAEnviar = {
+            ...formulario,
+            rol: formulario.rolId !== '' ? { id: formulario.rolId } : null
+        };
+
         if (formulario.idEmpleado) {
-            api.actualizarEmpleado(formulario.idEmpleado, formulario)
+            api.actualizarEmpleado(formulario.idEmpleado, datosAEnviar)
                 .then(() => {
                     alert("¡Empleado actualizado con éxito!");
-                    cargarEmpleados(); // Refrescamos la tabla
-                    // Vaciamos la libreta y volvemos al modo "Crear"
-                    setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' });
+                    cargarEmpleados(); 
+                    vaciarFormulario();
                 })
                 .catch(error => alert("Error al actualizar empleado: " + error.message));
-
         } else {
-            // Si NO hay ID, entonces estamos CREANDO uno nuevo (lo que ya tenías)
-            api.crearEmpleado(formulario)
+            api.crearEmpleado(datosAEnviar)
                 .then(() => {
                     alert("¡Empleado guardado con éxito!");
                     cargarEmpleados();
-                    setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '' });
+                    vaciarFormulario();
                 })
                 .catch(error => alert("Error al guardar empleado: " + error.message));
         }
     };
 
+    const vaciarFormulario = () => {
+        setFormulario({ idEmpleado: null, dni: '', nombre: '', apellidos: '', puesto: '', disponible: true, observaciones: '', password: '', rolId: '' });
+    };
+
     const prepararEdicion = (empleadoSeleccionado) => {
-        // Sobrescribimos el formulario con los datos del empleado que hemos clicado
         setFormulario({
-            idEmpleado: empleadoSeleccionado.idEmpleado, // ¡Importante añadir esto al estado inicial también!
+            idEmpleado: empleadoSeleccionado.idEmpleado,
             dni: empleadoSeleccionado.dni,
             nombre: empleadoSeleccionado.nombre,
             apellidos: empleadoSeleccionado.apellidos,
             puesto: empleadoSeleccionado.puesto,
             disponible: empleadoSeleccionado.disponible,
-            observaciones: empleadoSeleccionado.observaciones || '' // Por si las observaciones vienen en null desde Java
+            observaciones: empleadoSeleccionado.observaciones || '',
+            password: '', // Dejamos la contraseña en blanco por seguridad al editar
+            rolId: empleadoSeleccionado.rol ? empleadoSeleccionado.rol.id : '' // 🚀 5. Cargamos el rol que tenía
         });
     };
 
@@ -83,28 +90,38 @@ export default function Empleados() {
             api.eliminarEmpleado(id)
                 .then(() => {
                     alert("Empleado eliminado.");
-                    cargarEmpleados(); // Recargamos la tabla para que desaparezca visualmente
+                    cargarEmpleados(); 
                 })
                 .catch(error => alert("Error al eliminar: " + error.message));
         }
-    }
+    };
 
     return (
         <div className="pantalla-empleados">
             <h2>👥 Gestión de Plantilla</h2>
 
-            {/* FORMULARIO DE ALTA */}
+            {/* FORMULARIO DE ALTA / EDICIÓN */}
             <form onSubmit={guardarEmpleado} className="formulario-caja">
-                <h3>Alta de Nuevo Empleado</h3>
+                <h3>{formulario.idEmpleado ? "Editar Empleado" : "Alta de Nuevo Empleado"}</h3>
+                
                 <input type="text" name="dni" placeholder="DNI" value={formulario.dni} onChange={manejarCambio} required />
                 <input type="text" name="nombre" placeholder="Nombre" value={formulario.nombre} onChange={manejarCambio} required />
                 <input type="text" name="apellidos" placeholder="Apellidos" value={formulario.apellidos} onChange={manejarCambio} required />
                 <input type="text" name="puesto" placeholder="Puesto (ej. Camarero)" value={formulario.puesto} onChange={manejarCambio} required />
-                <input type='password' name="password" placeholder="Contraseña" value={formulario.password} onChange={manejarCambio} required />
-                <select name="rol" value={formulario.rol} onChange={manejarCambio} required>
-                    <option value="ROLE_USER">Usuario</option>
-                    <option value="ROLE_ADMIN">Administrador</option>
+                
+                {/* 🚀 6. Solo pedimos contraseña si estamos CREANDO uno nuevo */}
+                {!formulario.idEmpleado && (
+                    <input type='password' name="password" placeholder="Contraseña" value={formulario.password} onChange={manejarCambio} required />
+                )}
+
+                {/* 🚀 7. NUEVO SELECTOR DE ROLES DINÁMICO */}
+                <select name="rolId" value={formulario.rolId} onChange={manejarCambio} required>
+                    <option value="" disabled>-- Selecciona un Rol --</option>
+                    {roles.map(rol => (
+                        <option key={rol.id} value={rol.id}>{rol.nombre}</option>
+                    ))}
                 </select>
+
                 <label>
                     <input type="checkbox" name="disponible" checked={formulario.disponible} onChange={manejarCambio} />
                     ¿Está disponible para trabajar?
@@ -112,9 +129,12 @@ export default function Empleados() {
 
                 <textarea name="observaciones" placeholder="Observaciones..." value={formulario.observaciones} onChange={manejarCambio}></textarea>
 
-
-
-                <button type="submit">Guardar Empleado</button>
+                <button type="submit">{formulario.idEmpleado ? "Guardar Cambios" : "Guardar Nuevo Empleado"}</button>
+                
+                {/* Botón para cancelar la edición */}
+                {formulario.idEmpleado && (
+                    <button type="button" onClick={vaciarFormulario} style={{backgroundColor: '#7f8c8d', marginTop: '10px'}}>Cancelar</button>
+                )}
             </form>
 
             {/* TABLA DE EMPLEADOS */}
@@ -122,9 +142,9 @@ export default function Empleados() {
             <table className="tabla-estilizada">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>DNI</th>
                         <th>Nombre y Apellidos</th>
+                        <th>Rol</th>
                         <th>Puesto</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -133,9 +153,9 @@ export default function Empleados() {
                 <tbody>
                     {empleados.map(emp => (
                         <tr key={emp.idEmpleado}>
-                            <td>{emp.idEmpleado}</td>
                             <td>{emp.dni}</td>
                             <td>{emp.nombre} {emp.apellidos}</td>
+                            <td>{emp.rol ? emp.rol.nombre : "Sin Rol"}</td> {/* 🚀 Mostramos el rol en la tabla */}
                             <td>{emp.puesto}</td>
                             <td>{emp.disponible ? "✅ Activo" : "❌ Baja/Inactivo"}</td>
                             <td>

@@ -1,6 +1,5 @@
 package com.gamez.gestor_turnos.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,13 +10,16 @@ import com.gamez.gestor_turnos.dto.AuthRequest;
 import com.gamez.gestor_turnos.dto.AuthResponse;
 import com.gamez.gestor_turnos.service.AuthService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+
+    private final AuthService authService;
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {

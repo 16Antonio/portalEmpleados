@@ -10,9 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "cuadrantes")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Cuadrante {
 
     @Id
@@ -36,37 +42,6 @@ public class Cuadrante {
     @JoinColumn(name = "tipo_turno_id", nullable = false)
     private TipoTurno tipoTurno;
 
-    public Long getIdCuadrante() {
-        return idCuadrante;
-    }
-
-    public void setIdCuadrante(Long idCuadrante) {
-        this.idCuadrante = idCuadrante;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public Empleado getEmpleado() {
-        return empleado;
-    }
-
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
-    }
-
-    public TipoTurno getTipoTurno() {
-        return tipoTurno;
-    }
-
-    public void setTipoTurno(TipoTurno tipoTurno) {
-        this.tipoTurno = tipoTurno;
-    }
-
+    
     
 }

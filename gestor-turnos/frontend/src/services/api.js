@@ -21,7 +21,15 @@ export const api = {
         method: 'POST',
         headers: getAuthHeaders(), // 👈 ¡Enseñamos la pulsera!
         body: JSON.stringify(datos)
-    }).then(res => res.json()),
+    }).then(async res => {
+        if (!res.ok) {
+            // Si el servidor nos da un 403, 401, o 500, paramos aquí antes de que explote el JSON
+            if (res.status === 403) throw new Error("No tienes permisos para crear empleados");
+            if (res.status === 401) throw new Error("Tu sesión ha caducado");
+            throw new Error("Error al guardar el empleado en el servidor");
+        }
+        return res.json();
+    }),
 
     actualizarEmpleado: (id, datos) => fetch(`${URL_BASE}/empleados/${id}`, {
         method: 'PUT',
@@ -99,4 +107,27 @@ export const api = {
         if (!res.ok) throw new Error("DNI o contraseña incorrectos");
         return res.json();
     }),
+
+     // ==========================================
+    // 5. ROLES Y PERMISOS
+    // ==========================================
+    obtenerPermisos: () => fetch(`${URL_BASE}/permisos`, { 
+        headers: getAuthHeaders() 
+    }).then(res => res.json()),
+
+    obtenerRoles: () => fetch(`${URL_BASE}/roles`, { 
+        headers: getAuthHeaders() 
+    }).then(res => res.json()),
+
+    crearRol: (datos) => fetch(`${URL_BASE}/roles`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(datos)
+    }).then(res => res.json()),
+    
+    cambiarRolEmpleado: (idEmpleado, idRol) => fetch(`${URL_BASE}/empleados/${idEmpleado}/rol`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(idRol) // Solo enviamos el ID del rol
+    }).then(res => res.json()),
 };

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gamez.gestor_turnos.model.Cuadrante;
@@ -14,17 +13,20 @@ import com.gamez.gestor_turnos.repository.CuadrantesRepository;
 import com.gamez.gestor_turnos.repository.EmpleadoRepository;
 import com.gamez.gestor_turnos.repository.TipoTurnoRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service // Le dice a Spring: "Aquí están las reglas de negocio"
+@RequiredArgsConstructor 
 public class CuadranteService {
 
-    @Autowired
-    private CuadrantesRepository cuadrantesRepository;
+    
+    private final CuadrantesRepository cuadrantesRepository;
 
-    @Autowired
-    private EmpleadoRepository empleadoRepository; // Necesitamos esto para consultar al trabajador
+    
+    private final EmpleadoRepository empleadoRepository; // Necesitamos esto para consultar al trabajador
 
-    @Autowired
-    private TipoTurnoRepository tipoTurnoRepository;
+    
+    private final TipoTurnoRepository tipoTurnoRepository;
 
     public List<Cuadrante> obtenerTodos() {
         return cuadrantesRepository.findAll();
