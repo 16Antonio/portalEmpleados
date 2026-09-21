@@ -39,8 +39,8 @@ Este proyecto no se limita a ser un simple CRUD; aplica estándares del mundo la
 
 *(Añade aquí 2 o 3 capturas de tu Frontend. Por ejemplo, la pantalla de Login, la tabla de Empleados y la vista de los Cuadrantes).*
 
-* `![Pantalla de Login](enlace_a_imagen)`
-* `![Gestión de Empleados](enlace_a_imagen)`
+* `![Pantalla de Login](./docs/LoginScreen.png)`
+* `![Gestión de Empleados](./docs/EmpleadoScreen.png)`
 
 ## ⚙️ Instalación y Despliegue Local
 
