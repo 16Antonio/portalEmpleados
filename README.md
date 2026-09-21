@@ -49,6 +49,11 @@ Puedes probar la aplicación funcionando en tiempo real aquí:
 > Por políticas de ahorro de energía de estos proveedores, **si el servidor lleva un rato inactivo, se "duerme".** 
 > Es posible que **el primer inicio de sesión tarde entre 40 y 60 segundos** en responder mientras la máquina virtual se despierta. ¡Gracias por la paciencia!
 
+### 🔑 Credenciales de Acceso (Demo)
+Para probar la aplicación con permisos completos de Administrador (acceso a creación de roles, asignación de turnos, etc.), utiliza las siguientes credenciales:
+* **Usuario (DNI):** `11111111A`
+* **Contraseña:** `1234`
+
 ## ⚙️ Instalación y Despliegue Local
 
 ### Requisitos Previos
