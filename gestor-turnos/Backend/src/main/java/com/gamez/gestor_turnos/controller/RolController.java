@@ -2,7 +2,6 @@ package com.gamez.gestor_turnos.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/roles")
 @RequiredArgsConstructor 
 
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class RolController {
 
     private final RolService rolService;

@@ -18,43 +18,45 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity // 1. Le dice a Spring: "¡Oye, convierte esta clase en una tabla de MySQL!"
-@Table(name = "empleados") // Opcional: Para forzar que la tabla se llame en plural
+@Entity 
+@Table(name = "empleados") 
 @Getter
 @Setter
 @NoArgsConstructor
 public class Empleado {
 
-    @Id // 2. Le indica que esta variable es la Clave Primaria (Primary Key)
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 3. Le dice que sea Autoincrementalº
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEmpleado;
 
-    @Column(unique = true, nullable = false) // 4. Restricciones: DNI único y obligatorio
+    @NotBlank(message = "El DNI es obligatorio y no puede estar vacío")
+    @Column(unique = true, nullable = false)
     private String dni;
-
-    private String nombre;
     
+    @NotBlank(message = "El nombre es obligatorio")
+    private String nombre;
+
+    @NotBlank(message = "Los apellidos son obligatorios")
     private String apellidos;
     
     private String puesto;
 
-    private boolean disponible; // Spring Boot convertirá esto en un TINYINT (0 o 1) en SQL
+    private boolean disponible;
 
     private String observaciones;
 
     private String password;
 
 
-    // 1. Relación con el Rol principal (Muchos empleados pueden tener el mismo Rol)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id")
     private Rol rol;
 
-    // 2. Permisos específicos solo para este usuario (La excepción a la regla)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "empleados_permisos_extra",
@@ -72,7 +74,6 @@ public class Empleado {
             for (Permiso permiso : this.rol.getPermisos()) {
                 authorities.add(new SimpleGrantedAuthority(permiso.getNombre()));
             }
-            // Opcional: Añadimos también el nombre del rol por si lo necesitas usar directamente
             authorities.add(new SimpleGrantedAuthority("ROLE_" + this.rol.getNombre()));
         }
 

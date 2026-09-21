@@ -20,7 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException; // Asegúrate de importar esto arriba
+import io.jsonwebtoken.security.SignatureException; 
 
 @Service
 public class JwtService {
@@ -30,21 +30,20 @@ public class JwtService {
 @Value("${jwt.secret}")
 private String secretKey;
 
-    // 1. AHORA RECIBE EL EMPLEADO COMPLETO
+
     public String generarToken(Empleado empleado) {
         
         Map<String, Object> extraClaims = new HashMap<>();
         
-        // 2. EXTRAEMOS LA LISTA DE PERMISOS EN TEXTO
         List<String> permisos = empleado.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
                 
-        extraClaims.put("permisos", permisos); // Guardamos la lista en lugar del objeto Rol
+        extraClaims.put("permisos", permisos);
 
         return Jwts.builder()
             .setClaims(extraClaims)
-            .setSubject(empleado.getDni()) // O el campo que uses para el login (email, dni...)
+            .setSubject(empleado.getDni()) 
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -65,7 +64,7 @@ private String secretKey;
                 .getSubject();
     }
 
-    // 3. AHORA EXTRAE UNA LISTA DE PERMISOS, NO UN SOLO ROL
+
     @SuppressWarnings("unchecked")
     public List<String> extraerPermisos(String token) {
         return Jwts.parserBuilder()

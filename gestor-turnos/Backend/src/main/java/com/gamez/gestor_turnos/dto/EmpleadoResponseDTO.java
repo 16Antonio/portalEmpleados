@@ -16,8 +16,6 @@ public class EmpleadoResponseDTO {
     private boolean disponible;
     private Rol rol;
 
-    // MAGIA: Un constructor que coge al empleado de la base de datos 
-    // y copia solo lo que nos interesa al sobre.
     public EmpleadoResponseDTO(Empleado empleado) {
         this.idEmpleado = empleado.getIdEmpleado();
         this.dni = empleado.getDni();

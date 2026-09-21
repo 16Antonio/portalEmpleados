@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gamez.gestor_turnos.dto.EmpleadoResponseDTO;
+import com.gamez.gestor_turnos.exception.RecursoNoEncontradoException;
 import com.gamez.gestor_turnos.model.Empleado;
 import com.gamez.gestor_turnos.model.Rol;
 import com.gamez.gestor_turnos.repository.EmpleadoRepository;
@@ -18,12 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class EmpleadoService {
     
-    
-    private final  EmpleadoRepository empleadoRepository;
-
+    private final EmpleadoRepository empleadoRepository;
     private final RolRepository rolRepository;
-
-    private final  PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public List<EmpleadoResponseDTO> obtenerTodos() {
         return empleadoRepository.findAll().stream()
@@ -31,20 +29,18 @@ public class EmpleadoService {
             .collect(Collectors.toList());
     }
 
-    public Empleado crearEmpleado( Empleado nuevoEmpleado) {
+    public Empleado crearEmpleado(Empleado nuevoEmpleado) {
         nuevoEmpleado.setPassword(passwordEncoder.encode(nuevoEmpleado.getPassword()));
-
         return empleadoRepository.save(nuevoEmpleado);
     }
 
     public Empleado cambiarRol(Long idEmpleado, Long idRol) {
-        // Buscamos al empleado
         Empleado empleado = empleadoRepository.findById(idEmpleado)
-            .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-        // Buscamos el rol
+            .orElseThrow(() -> new RecursoNoEncontradoException("Empleado no encontrado"));
+            
         Rol nuevoRol = rolRepository.findById(idRol)
-            .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-        // Se lo asignamos y guardamos
+            .orElseThrow(() -> new RecursoNoEncontradoException("Rol no encontrado"));
+            
         empleado.setRol(nuevoRol);
         return empleadoRepository.save(empleado);
     }

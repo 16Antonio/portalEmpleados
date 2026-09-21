@@ -28,7 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // CHIVATO 1: Ver qué nos llega de Postman
+
         System.out.println("1. Cabecera recibida: " + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -38,23 +38,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        // CHIVATO 2: Ver el token limpio
+
         System.out.println("2. Token limpio: " + token);
 
         if (jwtService.isTokenValido(token)) {
-            // CHIVATO 3: Confirmar que la firma está bien
             System.out.println("3. ¡EL TOKEN ES VÁLIDO!");
 
             String dni = jwtService.extraerUsername(token);
             // Sacamos la lista de permisos del token
             List<String> permisos = jwtService.extraerPermisos(token);
 
-// Las convertimos al formato que le gusta a Spring Security
+
             List<SimpleGrantedAuthority> authorities = permisos.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
-// Creamos la autenticación con toda la lista completa
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     dni, null, authorities
             );

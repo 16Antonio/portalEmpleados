@@ -8,7 +8,6 @@ import com.gamez.gestor_turnos.model.Empleado;
 
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
     
-    // Con esta simple línea, Spring Boot crea automáticamente la consulta SQL por debajo
     Optional<Empleado> findByDni(String dni);
     
 }

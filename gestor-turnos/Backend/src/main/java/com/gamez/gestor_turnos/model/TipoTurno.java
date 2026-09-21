@@ -24,10 +24,10 @@ public class TipoTurno {
     private Long idTipoTurno;
 
     @Column(nullable = false, unique = true)
-    private String nombre; // Ej: "Apertura", "Cierre"
+    private String nombre; 
 
     @Column(nullable = false)
-    private LocalTime horaInicio; // Usamos LocalTime en lugar de String
+    private LocalTime horaInicio; 
 
     @Column(nullable = false)
     private LocalTime horaFin;

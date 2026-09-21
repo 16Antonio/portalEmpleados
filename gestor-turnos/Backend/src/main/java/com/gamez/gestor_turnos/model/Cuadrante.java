@@ -2,7 +2,7 @@ package com.gamez.gestor_turnos.model;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column; // Herramienta para guardar fechas (sin horas)
+import jakarta.persistence.Column; 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,18 +26,14 @@ public class Cuadrante {
     private Long idCuadrante;
 
     @Column(nullable = false)
-    private LocalDate fecha; // Ej: 2026-08-30
+    private LocalDate fecha; 
 
-    // ==========================================
-    // RELACIONES (FOREIGN KEYS)
-    // ==========================================
 
-    // Varios cuadrantes pueden pertenecer a un mismo empleado
     @ManyToOne 
-    @JoinColumn(name = "empleado_id", nullable = false) // Así se llamará la columna en MySQL
+    @JoinColumn(name = "empleado_id", nullable = false) 
     private Empleado empleado;
 
-    // Varios cuadrantes pueden usar el mismo tipo de turno (Ej: "Apertura")
+
     @ManyToOne
     @JoinColumn(name = "tipo_turno_id", nullable = false)
     private TipoTurno tipoTurno;

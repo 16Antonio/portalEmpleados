@@ -39,6 +39,5 @@ public class Rol {
     )
     private Set<Permiso> permisos = new HashSet<>();
 
-    // Constructores
     
 }

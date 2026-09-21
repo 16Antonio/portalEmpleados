@@ -2,7 +2,6 @@ package com.gamez.gestor_turnos.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,21 +20,20 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/cuadrantes")
 @RequiredArgsConstructor
 
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class CuadranteController {
 
-    // ATENCIÓN: Aquí NO inyectamos el Repository, inyectamos tu Service
+
 
     private final CuadranteService cuadranteService;
 
     @GetMapping
     public List<Cuadrante> obtenerTodos() {
-        return cuadranteService.obtenerTodos(); // Llama al método que creaste en el Service
+        return cuadranteService.obtenerTodos(); 
     }
 
     @PostMapping
     public Cuadrante asignarTurno(@RequestBody Cuadrante nuevoCuadrante) {
-        // Le pasamos la patata caliente a tu Service para que aplique la matemática
         return cuadranteService.asignarTurno(nuevoCuadrante); 
     }
 
