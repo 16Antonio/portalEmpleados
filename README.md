@@ -5,9 +5,8 @@
 ![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 
-Un sistema integral B2B (Business to Business) diseñado para gestionar los recursos humanos, turnos de trabajo y relaciones comerciales de una empresa de servicios. 
+Un sistema integral B2B (Business to Business) diseñado para gestionar los recursos humanos y turnos de trabajo. 
 
-Este proyecto fue desarrollado como **Proyecto Intermodular para el Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)**, con un fuerte enfoque en arquitectura limpia, seguridad y buenas prácticas de la industria.
 
 ## 🚀 Funcionalidades Principales
 
@@ -26,7 +25,7 @@ Este proyecto fue desarrollado como **Proyecto Intermodular para el Grado Superi
 * Control de disponibilidad del empleado en tiempo real.
 * Prevención de asignación de turnos múltiples inválidos en una misma fecha.
 
-## 🛠️ Arquitectura y Buenas Prácticas (Para Reclutadores)
+## 🛠️ Arquitectura y Buenas Prácticas 
 
 Este proyecto no se limita a ser un simple CRUD; aplica estándares del mundo laboral real:
 
@@ -37,10 +36,9 @@ Este proyecto no se limita a ser un simple CRUD; aplica estándares del mundo la
 
 ## 📸 Capturas de Pantalla
 
-*(Añade aquí 2 o 3 capturas de tu Frontend. Por ejemplo, la pantalla de Login, la tabla de Empleados y la vista de los Cuadrantes).*
 
-* `![Pantalla de Login](./docs/LoginScreen.png)`
-* `![Gestión de Empleados](./docs/EmpleadoScreen.png)`
+![Pantalla de Login](./docs/LoginScreen.png)
+![Gestión de Empleados](./docs/EmpleadoScreen.png)
 
 ## ⚙️ Instalación y Despliegue Local
 

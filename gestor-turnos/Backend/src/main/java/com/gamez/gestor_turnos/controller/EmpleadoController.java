@@ -33,6 +33,7 @@ public class EmpleadoController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_EMPLEADOS')")
     public List<EmpleadoResponseDTO> obtenerTodos() {
         return empleadosService.obtenerTodos();
     }
@@ -61,6 +62,7 @@ public class EmpleadoController {
     }
 
     @DeleteMapping("/{id}")
+     @PreAuthorize("hasAuthority('BORRAR_EMPLEADO')")
     public void eliminarEmpleado(@PathVariable Long id) {
         repositorio.deleteById(id);
     }

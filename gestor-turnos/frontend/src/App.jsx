@@ -48,13 +48,26 @@ export default function App() {
         <header className="navbar">
           <h1>🍽️ Gestor de Turnos</h1>
           <nav>
-            <Link to="/">📅 Ver Cuadrante</Link>
-            {(<Link to="/asignar">➕ Asignar Turno</Link>)}
-            {permisos.includes('CREAR_EMPLEADO') && (
+
+            {permisos.includes('VER_CUADRANTES') && (
+              <Link to="/">📅 Ver Cuadrante</Link>
+            )}
+
+            {permisos.includes('ASIGNAR_TURNO') && (
+              <Link to="/asignar">➕ Asignar Turno</Link>
+            )}
+
+            {permisos.includes('VER_EMPLEADOS') && (
               <Link to="/empleados">👥 Empleados</Link>
             )}
-            <Link to="/turnos">⏰Tipos de turno</Link>
-            <Link to="/roles"> 🛡️ Roles </Link>
+
+            {permisos.includes('VER_TIPOS_TURNO') && (
+              <Link to="/turnos">⏰ Tipos de turno</Link>
+            )}
+
+            {permisos.includes('CREAR_EMPLEADO') && ( 
+              <Link to="/roles"> 🛡️ Roles </Link>
+            )}
             <button onClick={cerrarSesion} style={{ backgroundColor: '#c0392b', marginLeft: '15px' }}>
               🚪 Salir
             </button>
