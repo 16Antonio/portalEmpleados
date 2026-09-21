@@ -40,6 +40,15 @@ Este proyecto no se limita a ser un simple CRUD; aplica estándares del mundo la
 ![Pantalla de Login](./docs/LoginScreen.png)
 ![Gestión de Empleados](./docs/EmpleadoScreen.png)
 
+## 🌐 Demo en Vivo
+Puedes probar la aplicación funcionando en tiempo real aquí:
+👉 **[Acceder al Gestor de Turnos](https://portal-empleados-topaz.vercel.app)** 
+> [!WARNING]
+> **Aviso sobre el tiempo de carga inicial:** 
+> El Backend de este proyecto está desplegado usando el *Tier Gratuito* de Render, y la Base de Datos en Aiven. 
+> Por políticas de ahorro de energía de estos proveedores, **si el servidor lleva un rato inactivo, se "duerme".** 
+> Es posible que **el primer inicio de sesión tarde entre 40 y 60 segundos** en responder mientras la máquina virtual se despierta. ¡Gracias por la paciencia!
+
 ## ⚙️ Instalación y Despliegue Local
 
 ### Requisitos Previos
